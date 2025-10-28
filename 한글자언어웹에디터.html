@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한 글자 한글 프로그래밍 언어</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '글';
+            position: absolute;
+            top: 15px;
+            left: 40px;
+            font-size: 50px;
+            opacity: 0.3;
+            font-weight: bold;
+        }
+
+        .header::after {
+            content: '자';
+            position: absolute;
+            top: 15px;
+            right: 40px;
+            font-size: 50px;
+            opacity: 0.3;
+            font-weight: bold;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 700px;
+        }
+
+        .editor-section {
+            padding: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .output-section {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #8B4513;
+            border-bottom: 2px solid #DAA520;
+            padding-bottom: 5px;
+        }
+
+        #codeEditor {
+            width: 100%;
+            height: 450px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'D2Coding', 'Consolas', monospace;
+            font-size: 16px;
+            line-height: 1.8;
+            resize: vertical;
+            background: #fefefe;
+        }
+
+        #output {
+            width: 100%;
+            height: 450px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'D2Coding', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #1e1e1e;
+            color: #00ff00;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .examples {
+            margin-top: 20px;
+        }
+
+        .example-btn {
+            background: #DAA520;
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .example-btn:hover {
+            background: #B8860B;
+        }
+
+        .variables {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .syntax-help {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .syntax-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .syntax-table th, .syntax-table td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .syntax-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin: 20px;
+            padding: 15px;
+            background: rgba(218, 165, 32, 0.1);
+            border-left: 4px solid #DAA520;
+            border-radius: 0 8px 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-section {
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ 한 글자 한글 프로그래밍 언어 🏛️</h1>
+            <div class="subtitle">"한 글자에 모든 뜻을 담다" - 세종대왕의 극단적 간결함</div>
+        </div>
+
+        <div class="quote">
+            "갈: 슬: 담: 풀:" - 단 네 글자로 모든 프로그래밍이 가능하다!
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="section-title">✏️ 한 글자 코드 작성</div>
+
+                <textarea id="codeEditor" placeholder='한 글자 + 콜론(:) 형태로 코드를 작성하세요.
+
+예시:
+말: 안녕 세상아!
+담: 나이 스무
+만: 나이>열
+    말: 어른입니다
+끝:'></textarea>
+
+                <div class="controls">
+                    <button class="btn" onclick="코드실행()">🚀 실행하기</button>
+                    <button class="btn btn-secondary" onclick="초기화()">🗑️ 초기화</button>
+                    <button class="btn btn-secondary" onclick="변수보기()">📊 변수 상태</button>
+                </div>
+
+                <div class="examples">
+                    <div class="section-title">📚 예제 코드</div>
+                    <button class="btn example-btn" onclick="예제로드('hello')">👋 인사</button>
+                    <button class="btn example-btn" onclick="예제로드('calc')">🧮 계산</button>
+                    <button class="btn example-btn" onclick="예제로드('condition')">🤔 조건문</button>
+                    <button class="btn example-btn" onclick="예제로드('loop')">🔄 반복문</button>
+                    <button class="btn example-btn" onclick="예제로드('game')">🎮 게임</button>
+                    <button class="btn example-btn" onclick="예제로드('hangeul')">📜 한글창제</button>
+                </div>
+
+                <div class="syntax-help">
+                    <strong>📋 주요 명령어 요약</strong>
+                    <table class="syntax-table">
+                        <tr><th>명령</th><th>뜻</th><th>예시</th></tr>
+                        <tr><td>담:</td><td>변수저장</td><td>담: 이름 세종</td></tr>
+                        <tr><td>말:</td><td>출력</td><td>말: 안녕하세요</td></tr>
+                        <tr><td>보:</td><td>변수출력</td><td>보: 이름</td></tr>
+                        <tr><td>더:</td><td>덧셈</td><td>더: 10 5</td></tr>
+                        <tr><td>빼:</td><td>뺄셈</td><td>빼: 20 3</td></tr>
+                        <tr><td>만:</td><td>조건문</td><td>만: 나이>20</td></tr>
+                        <tr><td>돌:</td><td>반복문</td><td>돌: 5</td></tr>
+                        <tr><td>끝:</td><td>블록종료</td><td>끝:</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-title">📺 실행 결과</div>
+                <div id="output">한 글자 한글 프로그래밍 언어에 오신 것을 환영합니다!
+
+좌측에 한 글자 명령어로 코드를 작성해보세요.
+
+예시:
+말: 백성들이여 안녕하시오!
+담: 왕 세종대왕
+보: 왕
+
+"실행하기" 버튼을 눌러 결과를 확인하세요!</div>
+
+                <div class="variables" id="variableDisplay">
+                    <strong>📋 현재 변수들:</strong><br>
+                    <span id="variableList">변수가 없습니다.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 한 글자 한글 프로그래밍 언어 인터프리터 (브라우저용)
+        class 한글자언어 {
+            constructor() {
+                this.변수들 = new Map();
+                this.출력결과 = [];
+                this.마지막연산결과 = null;
+
+                // 순우리말 숫자 매핑
+                this.순우리말숫자 = {
+                    '하나': 1, '둘': 2, '셋': 3, '넷': 4, '다섯': 5,
+                    '여섯': 6, '일곱': 7, '여덟': 8, '아홉': 9,
+                    '열': 10, '스무': 20, '서른': 30, '마흔': 40, '쉰': 50
+                };
+            }
+
+            값변환(값) {
+                if (typeof 값 === 'number') return 값;
+                if (!isNaN(값)) return Number(값);
+                if (this.순우리말숫자[값]) return this.순우리말숫자[값];
+                if (this.변수들.has(값)) return this.변수들.get(값);
+                return 값;
+            }
+
+            출력(내용) {
+                this.출력결과.push(내용);
+            }
+
+            명령실행(명령, 인수들) {
+                switch (명령) {
+                    case '담': // 변수 저장
+                        if (인수들.length >= 2) {
+                            const 이름 = 인수들[0];
+                            let 값 = 인수들.slice(1).join(' ');
+
+                            if (값.endsWith('결과') && this.마지막연산결과 !== null) {
+                                값 = this.마지막연산결과;
+                            } else {
+                                값 = this.값변환(값);
+                            }
+
+                            this.변수들.set(이름, 값);
+                        }
+                        break;
+
+                    case '말': // 출력
+                        const 메시지 = 인수들.join(' ');
+                        this.출력(메시지);
+                        break;
+
+                    case '보': // 변수 값 출력
+                        if (인수들.length > 0) {
+                            const 변수명 = 인수들[0];
+                            const 값 = this.변수들.get(변수명);
+                            if (값 !== undefined) {
+                                this.출력(값);
+                            }
+                        }
+                        break;
+
+                    case '더': // 덧셈
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a + b;
+                        }
+                        break;
+
+                    case '빼': // 뺄셈
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a - b;
+                        }
+                        break;
+
+                    case '곱': // 곱셈
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a * b;
+                        }
+                        break;
+
+                    case '나': // 나눗셈
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            if (b !== 0) {
+                                this.마지막연산결과 = Math.floor(a / b);
+                            }
+                        }
+                        break;
+
+                    case '같': // 비교
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a === b ? 1 : 0;
+                        }
+                        break;
+
+                    case '큰': // 크기 비교
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a > b ? 1 : 0;
+                        }
+                        break;
+
+                    case '작': // 작기 비교
+                        if (인수들.length >= 2) {
+                            const a = this.값변환(인수들[0]);
+                            const b = this.값변환(인수들[1]);
+                            this.마지막연산결과 = a < b ? 1 : 0;
+                        }
+                        break;
+
+                    case '슬': // 슬립/대기
+                        if (인수들.length > 0) {
+                            const 초 = this.값변환(인수들[0]);
+                            this.출력(`${초}초 대기 중...`);
+                        }
+                        break;
+                }
+            }
+
+            조건평가(조건식) {
+                if (조건식.includes('>')) {
+                    const [좌측, 우측] = 조건식.split('>');
+                    return this.값변환(좌측.trim()) > this.값변환(우측.trim());
+                } else if (조건식.includes('<')) {
+                    const [좌측, 우측] = 조건식.split('<');
+                    return this.값변환(좌측.trim()) < this.값변환(우측.trim());
+                } else if (조건식.includes('=')) {
+                    const [좌측, 우측] = 조건식.split('=');
+                    return this.값변환(좌측.trim()) === this.값변환(우측.trim());
+                }
+                return false;
+            }
+
+            실행(코드) {
+                this.출력결과 = [];
+                const 줄들 = 코드.split('\n')
+                    .map(줄 => 줄.trim())
+                    .filter(줄 => 줄.length > 0 && !줄.startsWith('//'));
+
+                let 조건스택 = [];
+                let 반복스택 = [];
+
+                for (let i = 0; i < 줄들.length; i++) {
+                    const 줄 = 줄들[i];
+                    const 콜론위치 = 줄.indexOf(':');
+                    if (콜론위치 === -1) continue;
+
+                    const 명령 = 줄.substring(0, 콜론위치).trim();
+                    const 인수부분 = 줄.substring(콜론위치 + 1).trim();
+                    const 인수들 = 인수부분.split(/\s+/).filter(인수 => 인수.length > 0);
+
+                    try {
+                        if (명령 === '만') {
+                            if (인수들.length > 0) {
+                                const 조건결과 = this.조건평가(인수들[0]);
+                                조건스택.push(조건결과);
+                            }
+                            continue;
+                        }
+
+                        if (명령 === '아') {
+                            if (조건스택.length > 0) {
+                                조건스택[조건스택.length - 1] = !조건스택[조건스택.length - 1];
+                            }
+                            continue;
+                        }
+
+                        if (명령 === '끝') {
+                            if (조건스택.length > 0) {
+                                조건스택.pop();
+                            } else if (반복스택.length > 0) {
+                                const 반복정보 = 반복스택[반복스택.length - 1];
+                                반복정보.현재++;
+                                if (반복정보.현재 < 반복정보.횟수) {
+                                    i = 반복정보.시작위치;
+                                } else {
+                                    반복스택.pop();
+                                }
+                            }
+                            continue;
+                        }
+
+                        if (명령 === '돌') {
+                            if (인수들.length > 0) {
+                                const 횟수 = this.값변환(인수들[0]);
+                                반복스택.push({
+                                    횟수: 횟수,
+                                    현재: 0,
+                                    시작위치: i
+                                });
+                            }
+                            continue;
+                        }
+
+                        const 실행가능 = 조건스택.length === 0 || 조건스택[조건스택.length - 1];
+                        if (실행가능) {
+                            this.명령실행(명령, 인수들);
+                        }
+
+                    } catch (오류) {
+                        this.출력(`오류: ${오류.message}`);
+                    }
+                }
+
+                return this.출력결과;
+            }
+
+            변수상태() {
+                return Object.fromEntries(this.변수들);
+            }
+
+            초기화() {
+                this.변수들.clear();
+                this.출력결과 = [];
+                this.마지막연산결과 = null;
+            }
+        }
+
+        // 전역 인터프리터
+        const 인터프리터 = new 한글자언어();
+
+        function 코드실행() {
+            const 코드 = document.getElementById('codeEditor').value;
+            const 출력창 = document.getElementById('output');
+
+            try {
+                출력창.innerHTML = '실행 중...\n\n';
+                const 결과 = 인터프리터.실행(코드);
+
+                let 출력텍스트 = '=== 실행 결과 ===\n';
+                if (결과.length > 0) {
+                    결과.forEach(항목 => {
+                        출력텍스트 += `${항목}\n`;
+                    });
+                } else {
+                    출력텍스트 += '출력이 없습니다.\n';
+                }
+
+                출력텍스트 += '\n=== 완료 ===';
+                출력창.innerHTML = 출력텍스트;
+                변수보기();
+
+            } catch (오류) {
+                출력창.innerHTML = `오류가 발생했습니다:\n${오류.message}`;
+            }
+        }
+
+        function 초기화() {
+            인터프리터.초기화();
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('output').innerHTML = '한 글자 한글 프로그래밍 언어에 오신 것을 환영합니다!\n\n좌측에 한 글자 명령어로 코드를 작성해보세요.';
+            변수보기();
+        }
+
+        function 변수보기() {
+            const 변수상태 = 인터프리터.변수상태();
+            const 변수목록 = document.getElementById('variableList');
+
+            if (Object.keys(변수상태).length === 0) {
+                변수목록.innerHTML = '변수가 없습니다.';
+            } else {
+                let 텍스트 = '';
+                for (const [이름, 값] of Object.entries(변수상태)) {
+                    텍스트 += `${이름}: ${값}<br>`;
+                }
+                변수목록.innerHTML = 텍스트;
+            }
+        }
+
+        function 예제로드(타입) {
+            const 예제들 = {
+                hello: `말: 백성들이여 안녕하시오!
+담: 왕 세종대왕
+말: 나는
+보: 왕
+말: 이다
+담: 창제년도 1443
+말: 한글을 만든 해는
+보: 창제년도
+말: 년이다`,
+
+                calc: `말: === 조선왕조 계산기 ===
+담: 고려건국 918
+담: 조선건국 1392
+빼: 조선건국 고려건국
+담: 고려기간 빼결과
+말: 고려왕조 지속 기간:
+보: 고려기간
+말: 년`,
+
+                condition: `담: 나이 25
+말: 나이 확인 중...
+만: 나이>20
+    말: 성인입니다
+    말: 정책에 참여할 수 있습니다
+아:
+    말: 미성년자입니다
+    말: 학문에 정진하세요
+끝:`,
+
+                loop: `말: 훈민정음 창제 시작!
+담: 글자수 다섯
+돌: 글자수
+    말: 글자 하나 완성!
+    빼: 글자수 하나
+    담: 글자수 빼결과
+끝:
+말: 창제 완료!`,
+
+                game: `말: === 세종대왕의 수학 게임 ===
+담: 문제1 15
+담: 문제2 25
+더: 문제1 문제2
+담: 정답 더결과
+말: 문제:
+보: 문제1
+말: +
+보: 문제2
+말: = ?
+말: 정답은
+보: 정답
+말: 입니다!`,
+
+                hangeul: `말: 🏛️ 훈민정음 28글자 창제 🏛️
+담: 자음 14
+담: 모음 10
+담: 복합음 4
+더: 자음 모음
+담: 중간합계 더결과
+더: 중간합계 복합음
+담: 총글자 더결과
+말: 자음:
+보: 자음
+말: 개
+말: 모음:
+보: 모음
+말: 개
+말: 복합음:
+보: 복합음
+말: 개
+말: 총합:
+보: 총글자
+말: 개 완성!
+같: 총글자 28
+만: 마지막연산결과=1
+    말: 🎉 훈민정음 완성!
+끝:`
+            };
+
+            document.getElementById('codeEditor').value = 예제들[타입] || '';
+        }
+
+        // 초기 설정
+        변수보기();
+    </script>
+</body>
+</html>

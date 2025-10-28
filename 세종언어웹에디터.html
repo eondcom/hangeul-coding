@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세종대왕의 한글 프로그래밍 언어</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '훈';
+            position: absolute;
+            top: 15px;
+            left: 40px;
+            font-size: 50px;
+            opacity: 0.3;
+            font-weight: bold;
+        }
+
+        .header::after {
+            content: '민';
+            position: absolute;
+            top: 15px;
+            right: 40px;
+            font-size: 50px;
+            opacity: 0.3;
+            font-weight: bold;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .editor-section {
+            padding: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .output-section {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #8B4513;
+            border-bottom: 2px solid #DAA520;
+            padding-bottom: 5px;
+        }
+
+        #codeEditor {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'D2Coding', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            background: #fefefe;
+        }
+
+        #output {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'D2Coding', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #1e1e1e;
+            color: #00ff00;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .examples {
+            margin-top: 20px;
+        }
+
+        .example-btn {
+            background: #DAA520;
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .example-btn:hover {
+            background: #B8860B;
+        }
+
+        .variables {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin: 20px;
+            padding: 15px;
+            background: rgba(218, 165, 32, 0.1);
+            border-left: 4px solid #DAA520;
+            border-radius: 0 8px 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-section {
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ 세종대왕의 한글 프로그래밍 언어 🏛️</h1>
+            <p>"백성이 이를 쉬이 배워 일상에 쓰고자 할 따름이니라"</p>
+        </div>
+
+        <div class="quote">
+            "나라의 말이 중국과 달라 문자와 서로 통하지 아니하니, 어리석은 백성들이 말하고자 하는 바가 있어도 마침내 제 뜻을 능히 펴지 못하는 사람이 많다. 내가 이를 불쌍히 여겨 새로 스물여덟 글자를 만드니..."
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="section-title">📝 한글 코드 작성</div>
+
+                <textarea id="codeEditor" placeholder='여기에 세종 언어로 코드를 작성하세요.
+
+예시:
+"안녕하세요, 백성들이여!"를 출력하라.
+
+변수 나이를 25로 정하라.
+만약 나이가 20보다 크거나같으면
+    "성인이옵니다"를 출력하라.
+아니면
+    "아직 어리옵니다"를 출력하라.
+끝.'></textarea>
+
+                <div class="controls">
+                    <button class="btn" onclick="코드실행()">🚀 실행하기</button>
+                    <button class="btn btn-secondary" onclick="초기화()">🗑️ 초기화</button>
+                    <button class="btn btn-secondary" onclick="변수보기()">📊 변수 상태</button>
+                </div>
+
+                <div class="examples">
+                    <div class="section-title">📚 예제 코드</div>
+                    <button class="btn example-btn" onclick="예제로드('hello')">👋 인사</button>
+                    <button class="btn example-btn" onclick="예제로드('age')">📅 나이 계산</button>
+                    <button class="btn example-btn" onclick="예제로드('condition')">🤔 조건문</button>
+                    <button class="btn example-btn" onclick="예제로드('loop')">🔄 반복문</button>
+                    <button class="btn example-btn" onclick="예제로드('function')">⚙️ 함수</button>
+                    <button class="btn example-btn" onclick="예제로드('complex')">🎯 종합 예제</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-title">📺 실행 결과</div>
+                <div id="output">세종 프로그래밍 언어에 오신 것을 환영합니다!
+좌측에 코드를 작성하고 "실행하기" 버튼을 눌러보세요.
+
+세종대왕의 철학이 담긴 한글 프로그래밍을 체험해보세요!</div>
+
+                <div class="variables" id="variableDisplay">
+                    <strong>📋 현재 변수들:</strong><br>
+                    <span id="variableList">변수가 없습니다.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 세종 언어 인터프리터 (간소화 버전)
+        class 세종언어 {
+            constructor() {
+                this.변수들 = new Map();
+                this.출력결과 = [];
+            }
+
+            출력(내용) {
+                this.출력결과.push(내용);
+                return 내용;
+            }
+
+            값평가(표현식) {
+                // 문자열 리터럴
+                if (표현식.match(/^".*"$/)) {
+                    return 표현식.slice(1, -1);
+                }
+
+                // 숫자 리터럴
+                if (!isNaN(표현식) && 표현식.trim() !== '') {
+                    return Number(표현식);
+                }
+
+                // 변수 참조
+                if (this.변수들.has(표현식)) {
+                    return this.변수들.get(표현식);
+                }
+
+                // 덧셈
+                const 덧셈매치 = 표현식.match(/(.+?)와 (.+?)를 더한값/);
+                if (덧셈매치) {
+                    return this.값평가(덧셈매치[1]) + this.값평가(덧셈매치[2]);
+                }
+
+                // 뺄셈
+                const 뺄셈매치 = 표현식.match(/(.+?)에서 (.+?)를 뺀값/);
+                if (뺄셈매치) {
+                    return this.값평가(뺄셈매치[1]) - this.값평가(뺄셈매치[2]);
+                }
+
+                // 곱셈
+                const 곱셈매치 = 표현식.match(/(.+?)와 (.+?)를 곱한값/);
+                if (곱셈매치) {
+                    return this.값평가(곱셈매치[1]) * this.값평가(곱셈매치[2]);
+                }
+
+                return 표현식;
+            }
+
+            조건평가(조건식) {
+                const 크거나같음 = 조건식.match(/(.+?)가 (.+?)보다 크거나같으면/);
+                if (크거나같음) {
+                    return this.값평가(크거나같음[1]) >= this.값평가(크거나같음[2]);
+                }
+
+                const 큼 = 조건식.match(/(.+?)가 (.+?)보다 크면/);
+                if (큼) {
+                    return this.값평가(큼[1]) > this.값평가(큼[2]);
+                }
+
+                const 작거나같음 = 조건식.match(/(.+?)가 (.+?)보다 작거나같으면/);
+                if (작거나같음) {
+                    return this.값평가(작거나같음[1]) <= this.값평가(작거나같음[2]);
+                }
+
+                const 같음 = 조건식.match(/(.+?)가 (.+?)와 같으면/);
+                if (같음) {
+                    return this.값평가(같음[1]) === this.값평가(같음[2]);
+                }
+
+                return false;
+            }
+
+            실행(코드) {
+                this.출력결과 = [];
+                const 줄들 = 코드.split('\n').map(줄 => 줄.trim()).filter(줄 => 줄.length > 0);
+
+                let 조건스택 = [];
+
+                for (let i = 0; i < 줄들.length; i++) {
+                    const 줄 = 줄들[i];
+
+                    // 주석 건너뛰기
+                    if (줄.startsWith('//') || 줄.startsWith('===')) continue;
+
+                    try {
+                        // 변수 선언
+                        const 변수선언 = 줄.match(/변수 (.+?)를 (.+?)로 정하라\./);
+                        if (변수선언) {
+                            const 값 = this.값평가(변수선언[2]);
+                            this.변수들.set(변수선언[1], 값);
+                            continue;
+                        }
+
+                        // 출력
+                        const 출력매치 = 줄.match(/(.+?)를 출력하라\./);
+                        if (출력매치) {
+                            const 실행가능 = 조건스택.length === 0 || 조건스택[조건스택.length - 1];
+                            if (실행가능) {
+                                const 값 = this.값평가(출력매치[1]);
+                                this.출력(값);
+                            }
+                            continue;
+                        }
+
+                        // 조건문
+                        const 조건문 = 줄.match(/만약 (.+?)이면/);
+                        if (조건문) {
+                            const 조건결과 = this.조건평가(조건문[1]);
+                            조건스택.push(조건결과);
+                            continue;
+                        }
+
+                        // 아니면
+                        if (줄 === '아니면') {
+                            if (조건스택.length > 0) {
+                                조건스택[조건스택.length - 1] = !조건스택[조건스택.length - 1];
+                            }
+                            continue;
+                        }
+
+                        // 끝
+                        if (줄 === '끝.') {
+                            if (조건스택.length > 0) {
+                                조건스택.pop();
+                            }
+                            continue;
+                        }
+
+                    } catch (오류) {
+                        this.출력(`오류: ${오류.message}`);
+                    }
+                }
+
+                return this.출력결과;
+            }
+
+            변수상태() {
+                return Object.fromEntries(this.변수들);
+            }
+
+            초기화() {
+                this.변수들.clear();
+                this.출력결과 = [];
+            }
+        }
+
+        // 전역 인터프리터 인스턴스
+        const 인터프리터 = new 세종언어();
+
+        function 코드실행() {
+            const 코드 = document.getElementById('codeEditor').value;
+            const 출력창 = document.getElementById('output');
+
+            try {
+                출력창.innerHTML = '실행 중...\n\n';
+
+                const 결과 = 인터프리터.실행(코드);
+
+                let 출력텍스트 = '=== 실행 결과 ===\n';
+                if (결과.length > 0) {
+                    결과.forEach(항목 => {
+                        출력텍스트 += `${항목}\n`;
+                    });
+                } else {
+                    출력텍스트 += '출력이 없습니다.\n';
+                }
+
+                출력텍스트 += '\n=== 완료 ===';
+                출력창.innerHTML = 출력텍스트;
+
+                변수보기();
+
+            } catch (오류) {
+                출력창.innerHTML = `오류가 발생했습니다:\n${오류.message}`;
+            }
+        }
+
+        function 초기화() {
+            인터프리터.초기화();
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('output').innerHTML = '세종 프로그래밍 언어에 오신 것을 환영합니다!\n좌측에 코드를 작성하고 "실행하기" 버튼을 눌러보세요.';
+            변수보기();
+        }
+
+        function 변수보기() {
+            const 변수상태 = 인터프리터.변수상태();
+            const 변수목록 = document.getElementById('variableList');
+
+            if (Object.keys(변수상태).length === 0) {
+                변수목록.innerHTML = '변수가 없습니다.';
+            } else {
+                let 텍스트 = '';
+                for (const [이름, 값] of Object.entries(변수상태)) {
+                    텍스트 += `${이름}: ${값}<br>`;
+                }
+                변수목록.innerHTML = 텍스트;
+            }
+        }
+
+        function 예제로드(타입) {
+            const 예제들 = {
+                hello: `"백성들이여, 안녕하시오!"를 출력하라.
+"한글로 프로그래밍 하는 것이 얼마나 자연스러운지 보시오!"를 출력하라.`,
+
+                age: `변수 태어난해를 1397로 정하라.
+변수 현재년도를 2024로 정하라.
+변수 나이를 현재년도에서 태어난해를 뺀값으로 정하라.
+"세종대왕님의 나이는"을 출력하라.
+나이를 출력하라.
+"세입니다"를 출력하라.`,
+
+                condition: `변수 나이를 25로 정하라.
+만약 나이가 20보다 크거나같으면
+    "성인이옵니다"를 출력하라.
+    "정책에 참여할 수 있습니다"를 출력하라.
+아니면
+    "아직 어리옵니다"를 출력하라.
+    "학문에 정진하시오"를 출력하라.
+끝.`,
+
+                loop: `변수 글자수를 5로 정하라.
+변수 현재글자를 1로 정하라.
+"훈민정음 창제 과정:"을 출력하라.
+// 반복문은 아직 구현 중입니다
+"1번째 글자 완성"을 출력하라.
+"2번째 글자 완성"을 출력하라.
+"3번째 글자 완성"을 출력하라.`,
+
+                function: `// 함수는 다음 버전에서 지원 예정
+변수 첫번째수를 10으로 정하라.
+변수 두번째수를 20으로 정하라.
+변수 합계를 첫번째수와 두번째수를 더한값으로 정하라.
+"계산 결과:"를 출력하라.
+합계를 출력하라.`,
+
+                complex: `"=== 조선왕조 연대기 계산기 ==="를 출력하라.
+
+변수 고려멸망을 1392로 정하라.
+변수 조선건국을 고려멸망과 0을 더한값으로 정하라.
+변수 세종즉위를 1418로 정하라.
+변수 세종통치기간을 세종즉위에서 조선건국을 뺀값으로 정하라.
+
+"조선 건국: "을 출력하라.
+조선건국을 출력하라.
+
+"세종대왕 즉위: "을 출력하라.
+세종즉위를 출력하라.
+
+"즉위까지 걸린 시간: "을 출력하라.
+세종통치기간을 출력하라.
+"년"을 출력하라.
+
+만약 세종통치기간이 20보다 크거나같으면
+    "오랜 준비 기간이 있었습니다"를 출력하라.
+아니면
+    "비교적 빠른 즉위였습니다"를 출력하라.
+끝.`
+            };
+
+            document.getElementById('codeEditor').value = 예제들[타입] || '';
+        }
+
+        // 초기 변수 상태 표시
+        변수보기();
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세종대왕의 한글 게시판</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '한';
+            position: absolute;
+            top: 10px;
+            left: 30px;
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .header::after {
+            content: '글';
+            position: absolute;
+            top: 10px;
+            right: 30px;
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .nav button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .nav button:hover {
+            background: #0056b3;
+        }
+
+        .nav button.active {
+            background: #28a745;
+        }
+
+        .content {
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .post-list {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .post-list th, .post-list td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-list th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .post-list tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .post-list tr:hover {
+            background: #e3f2fd;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 200px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .post-detail {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .post-meta {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stats {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ 세종대왕의 한글 게시판 🏛️</h1>
+            <p>"백성이 이를 쉬이 배워 일상에 쓰고자 할 따름이니라"</p>
+        </div>
+
+        <div class="nav">
+            <button onclick="화면전환('목록')" class="active" id="목록버튼">📜 글목록</button>
+            <button onclick="화면전환('작성')" id="작성버튼">✍️ 글쓰기</button>
+            <button onclick="통계보기()" id="통계버튼">📊 통계</button>
+        </div>
+
+        <div class="content">
+            <!-- 통계 화면 -->
+            <div id="통계화면" class="hidden">
+                <div class="stats">
+                    <h3>📊 게시판 통계</h3>
+                    <p>총 글 수: <span id="총글수">0</span>개</p>
+                    <p>총 조회수: <span id="총조회수">0</span>회</p>
+                    <p>가장 인기있는 글: <span id="인기글"></span></p>
+                </div>
+            </div>
+
+            <!-- 글 목록 화면 -->
+            <div id="목록화면">
+                <h3>📜 전체 글 목록</h3>
+                <table class="post-list">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>조회수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="글목록">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 글 쓰기 화면 -->
+            <div id="작성화면" class="hidden">
+                <h3>✍️ 새 글 작성</h3>
+                <form id="글작성폼">
+                    <div class="form-group">
+                        <label for="제목">제목:</label>
+                        <input type="text" id="제목" name="제목" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="작성자">작성자:</label>
+                        <input type="text" id="작성자" name="작성자" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="내용">내용:</label>
+                        <textarea id="내용" name="내용" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">📝 글 올리기</button>
+                    <button type="button" class="btn btn-secondary" onclick="화면전환('목록')">📋 목록으로</button>
+                </form>
+            </div>
+
+            <!-- 글 상세보기 화면 -->
+            <div id="상세화면" class="hidden">
+                <div id="글상세내용"></div>
+                <button class="btn btn-secondary" onclick="화면전환('목록')">📋 목록으로 돌아가기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 세종대왕의 한글 프로그래밍
+        let 게시글목록 = [];
+        let 글번호 = 1;
+
+        // 한글 함수명 사용
+        function 글추가(제목, 내용, 작성자) {
+            const 새글 = {
+                번호: 글번호++,
+                제목: 제목,
+                내용: 내용,
+                작성자: 작성자,
+                작성일: new Date().toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
+                조회수: 0
+            };
+
+            게시글목록.push(새글);
+            목록새로고침();
+            alert(`"${새글.제목}" 글이 성공적으로 작성되었습니다! 🎉`);
+        }
+
+        function 목록새로고침() {
+            const 목록요소 = document.getElementById('글목록');
+            목록요소.innerHTML = '';
+
+            게시글목록.forEach(글 => {
+                const 행 = document.createElement('tr');
+                행.onclick = () => 글보기(글.번호);
+                행.innerHTML = `
+                    <td>${글.번호}</td>
+                    <td><strong>${글.제목}</strong></td>
+                    <td>${글.작성자}</td>
+                    <td>${글.작성일}</td>
+                    <td>${글.조회수}</td>
+                `;
+                목록요소.appendChild(행);
+            });
+
+            통계갱신();
+        }
+
+        function 글보기(번호) {
+            const 글 = 게시글목록.find(글 => 글.번호 === 번호);
+            if (!글) return;
+
+            글.조회수++;
+
+            const 상세내용 = `
+                <div class="post-detail">
+                    <div class="post-meta">
+                        <h2>${글.제목}</h2>
+                        <p><strong>작성자:</strong> ${글.작성자} | <strong>작성일:</strong> ${글.작성일} | <strong>조회수:</strong> ${글.조회수}</p>
+                    </div>
+                    <div class="post-content">
+                        ${글.내용.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('글상세내용').innerHTML = 상세내용;
+            화면전환('상세');
+            목록새로고침();
+        }
+
+        function 화면전환(화면명) {
+            // 모든 화면 숨기기
+            document.getElementById('목록화면').classList.add('hidden');
+            document.getElementById('작성화면').classList.add('hidden');
+            document.getElementById('상세화면').classList.add('hidden');
+            document.getElementById('통계화면').classList.add('hidden');
+
+            // 모든 버튼 비활성화
+            document.querySelectorAll('.nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 선택된 화면 보이기
+            if (화면명 === '목록') {
+                document.getElementById('목록화면').classList.remove('hidden');
+                document.getElementById('목록버튼').classList.add('active');
+            } else if (화면명 === '작성') {
+                document.getElementById('작성화면').classList.remove('hidden');
+                document.getElementById('작성버튼').classList.add('active');
+            } else if (화면명 === '상세') {
+                document.getElementById('상세화면').classList.remove('hidden');
+            }
+        }
+
+        function 통계보기() {
+            document.getElementById('목록화면').classList.add('hidden');
+            document.getElementById('작성화면').classList.add('hidden');
+            document.getElementById('상세화면').classList.add('hidden');
+            document.getElementById('통계화면').classList.remove('hidden');
+
+            document.querySelectorAll('.nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('통계버튼').classList.add('active');
+
+            통계갱신();
+        }
+
+        function 통계갱신() {
+            const 총글수 = 게시글목록.length;
+            const 총조회수 = 게시글목록.reduce((합계, 글) => 합계 + 글.조회수, 0);
+            let 인기글 = '없음';
+
+            if (총글수 > 0) {
+                const 최고조회글 = 게시글목록.reduce((최고, 현재) =>
+                    현재.조회수 > 최고.조회수 ? 현재 : 최고
+                );
+                인기글 = `"${최고조회글.제목}" (${최고조회글.조회수}회)`;
+            }
+
+            document.getElementById('총글수').textContent = 총글수;
+            document.getElementById('총조회수').textContent = 총조회수;
+            document.getElementById('인기글').textContent = 인기글;
+        }
+
+        // 글 작성 폼 처리
+        document.getElementById('글작성폼').addEventListener('submit', function(이벤트) {
+            이벤트.preventDefault();
+
+            const 제목 = document.getElementById('제목').value;
+            const 내용 = document.getElementById('내용').value;
+            const 작성자 = document.getElementById('작성자').value;
+
+            if (제목 && 내용 && 작성자) {
+                글추가(제목, 내용, 작성자);
+                this.reset();
+                화면전환('목록');
+            }
+        });
+
+        // 초기 샘플 데이터
+        글추가(
+            '한글창제의 뜻',
+            '나라의 말이 중국과 달라 문자와 서로 통하지 아니하여,\n어리석은 백성들이 말하고자 하는 바가 있어도\n마침내 제 뜻을 능히 펴지 못하는 사람이 많다.\n내가 이를 불쌍히 여겨 새로 스물여덟 글자를 만드니,\n사람마다 하여금 쉽게 익혀 일상생활에 편리하게 하고자 할 따름이다.',
+            '세종대왕'
+        );
+
+        글추가(
+            '집현전 학사들의 연구',
+            '전하께서 명하신 새 글자 연구에 온 힘을 다하고 있사옵니다.\n백성들이 쉽게 배울 수 있는 글자를 만들어\n모든 이가 글을 알 수 있게 하는 것이 저희의 목표입니다.',
+            '정인지'
+        );
+
+        글추가(
+            '훈민정음 해례본 완성',
+            '드디어 훈민정음 해례본이 완성되었습니다!\n글자의 제작 원리와 사용법을 자세히 설명한 이 책으로\n온 백성이 글자를 익힐 수 있을 것입니다.',
+            '최항'
+        );
+
+        // 초기 화면 설정
+        목록새로고침();
+    </script>
+</body>
+</html>
